@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#e2e2e2" >
+	
+    <com.hilinju.android.widget.CustomerScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+        <include layout="@layout/fragment_navigation_drawer_items"/>
+    </com.hilinju.android.widget.CustomerScrollView>
+    
+    <include layout="@layout/fragment_navigation_drawer_foot"/>
+    
+</LinearLayout>

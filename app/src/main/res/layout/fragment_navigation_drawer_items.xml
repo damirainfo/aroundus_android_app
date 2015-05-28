@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#e2e2e2"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/menu_item_quests"
+        style="@style/MenuItemLayoutStyle" >
+
+        <ImageView
+            style="@style/MenuItemImageViewStyle"
+            android:background="@color/blue"
+            android:contentDescription="@null" />
+
+        <TextView
+            style="@style/MenuItemTextViewStyle"
+            android:gravity="center"
+            android:text="Question" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d2d2d2" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d2d2d2"
+        android:visibility="gone" />
+
+</LinearLayout>
