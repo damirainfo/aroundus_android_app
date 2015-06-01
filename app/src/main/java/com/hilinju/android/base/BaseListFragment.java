@@ -26,10 +26,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import com.hilinju.android.AppContext;
 import com.hilinju.android.R;
 import com.hilinju.android.cache.CacheManager;
 import com.hilinju.android.entity.Base;
 import com.hilinju.android.entity.ListEntity;
+import com.hilinju.android.entity.Result;
 import com.hilinju.android.util.TDevice;
 
 
@@ -59,9 +61,12 @@ public abstract class BaseListFragment<T extends Base> extends BaseFragment
 
     protected int mCatalog = 1;
 
+    //API返回数据
+    protected Result mResult;
+
     private AsyncTask<String, Void, ListEntity<T>> mCacheTask;
 
-    protected abstract ListBaseAdapter<T> getListAdapter();
+    protected abstract ListBaseAdapter<T> getAdapter();
 
 
     @Override
@@ -117,16 +122,16 @@ public abstract class BaseListFragment<T extends Base> extends BaseFragment
             mListView.setAdapter(mAdapter);
             mErrorLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
         } else {
-//            mAdapter = getListAdapter();
-//            mListView.setAdapter(mAdapter);
-//
-//            if (requestDataIfViewCreated()) {
-//                mErrorLayout.setErrorType(EmptyLayout.NETWORK_LOADING);
-//                mState = STATE_NONE;
-//                requestData(false);
-//            } else {
-//                mErrorLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
-//            }
+            mAdapter = getAdapter();
+            mListView.setAdapter(mAdapter);
+
+            if (requestDataIfViewCreated()) {
+                mErrorLayout.setErrorType(EmptyLayout.NETWORK_LOADING);
+                mState = STATE_NONE;
+                requestData(false);
+            } else {
+                mErrorLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
+            }
 
         }
         if (mStoreEmptyState != -1) {
@@ -172,7 +177,7 @@ public abstract class BaseListFragment<T extends Base> extends BaseFragment
             readCacheData(key);
         } else {
             // 取新的数据
-            //sendRequestData();
+            sendRequestData();
         }
     }
 
@@ -228,28 +233,91 @@ public abstract class BaseListFragment<T extends Base> extends BaseFragment
 
         @Override
         protected ListEntity<T> doInBackground(String... params) {
-            Serializable serial = CacheManager.readObject(mContext.get(),
-                    params[0]);
+            Serializable serial = CacheManager.readObject(mContext.get(), params[0]);
             if (serial == null) {
                 return null;
             } else {
-                return readList(serial);
+                return readData(serial);
             }
         }
 
         @Override
         protected void onPostExecute(ListEntity<T> list) {
-//            super.onPostExecute(list);
-//            if (list != null) {
-//                executeOnLoadDataSuccess(list.getList());
-//            } else {
-//                executeOnLoadDataError(null);
-//            }
-//            executeOnLoadFinish();
+            super.onPostExecute(list);
+            if (list != null) {
+                onLoadDataSuccess(list.getList());
+            } else {
+                onLoadDataError(null);
+            }
+            onLoadFinish();
         }
     }
 
-    protected ListEntity<T> readList(Serializable serial) {
+    /**
+     * 对返回的数据做处理
+     * @param data
+     */
+    protected void onLoadDataSuccess(List<T> data) {
+        if (data == null) {
+            data = new ArrayList<T>();
+        }
+
+        if (mResult != null && !mResult.isSuccess()) {
+            AppContext.showToast(mResult.getMsg());
+            // 注销登陆，密码已经修改，cookie，失效了
+            AppContext.getInstance().logout();
+        }
+
+        mErrorLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
+        if (mCurrentPage == 0) {
+            mAdapter.clear();
+        }
+
+        //TODO 对比数据是否重复
+        int adapterState = ListBaseAdapter.STATE_EMPTY_ITEM;
+        if ((mAdapter.getCount() + data.size()) == 0) {
+            adapterState = ListBaseAdapter.STATE_EMPTY_ITEM;
+        } else if (data.size() == 0
+                || (data.size() < getPageSize() && mCurrentPage == 0)) {
+            adapterState = ListBaseAdapter.STATE_NO_MORE;
+            mAdapter.notifyDataSetChanged();
+        } else {
+            adapterState = ListBaseAdapter.STATE_LOAD_MORE;
+        }
+        mAdapter.setState(adapterState);
+        mAdapter.addData(data);
+    }
+
+    /**
+     * 加载数据异常
+     * @param error
+     */
+    protected void onLoadDataError(String error) {
+        if (mCurrentPage == 0
+                && !CacheManager.isExistDataCache(getActivity(), getCacheKey())) {
+            mErrorLayout.setErrorType(EmptyLayout.NETWORK_ERROR);
+        } else {
+            mErrorLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
+            mAdapter.setState(ListBaseAdapter.STATE_NETWORK_ERROR);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    // 完成刷新
+    protected void onLoadFinish() {
+        setSwipeRefreshLoadedState();
+        mState = STATE_NONE;
+    }
+
+    /** 设置顶部加载完毕的状态 */
+    private void setSwipeRefreshLoadedState() {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            mSwipeRefreshLayout.setEnabled(true);
+        }
+    }
+
+    protected ListEntity<T> readData(Serializable serial) {
         return null;
     }
 
@@ -299,6 +367,14 @@ public abstract class BaseListFragment<T extends Base> extends BaseFragment
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem,
                          int visibleItemCount, int totalItemCount) {
+    }
+
+    protected boolean requestDataIfViewCreated() {
+        return true;
+    }
+
+    protected int getPageSize() {
+        return AppContext.PAGE_SIZE;
     }
 
 }

@@ -15,7 +15,6 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hilinju.android.AppConfig;
 import com.hilinju.android.AppContext;
@@ -60,12 +59,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             restoreActionBar();
             return true;
         }
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -129,7 +128,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             title.setText(getString(mainTab.getResName()));
             tab.setIndicator(indicator);
             tab.setContent(new TabContentFactory() {
-
                 @Override
                 public View createTabContent(String tag) {
                     return new View(MainActivity.this);

@@ -35,18 +35,10 @@ import butterknife.InjectView;
  * Created by qiuxj on 2015/5/27.
  */
 public class TopicAdapter extends ListBaseAdapter {
-    public TopicAdapter() {}
+    public TopicAdapter() {
 
-    private Bitmap recordBitmap;
-    private final KJBitmap kjb = new KJBitmap();
-    private int rectSize;
-
-    private void initRecordImg(Context cxt) {
-        recordBitmap = BitmapFactory.decodeResource(cxt.getResources(),
-                R.drawable.audio3);
-        recordBitmap = ImageUtils.zoomBitmap(recordBitmap,
-                DensityUtils.dip2px(cxt, 20f), DensityUtils.dip2px(cxt, 20f));
     }
+    private int rectSize;
 
     private void initImageSize(Context cxt) {
         if (cxt != null && rectSize == 0) {

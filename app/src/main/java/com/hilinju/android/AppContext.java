@@ -27,6 +27,33 @@ public class AppContext extends BaseApplication {
         return login;
     }
 
+    /**
+     * 清除登录信息
+     */
+    public void cleanLoginInfo() {
+        this.token = null;
+        this.login = false;
+        /*removeProperty("user.uid", "user.name", "user.face", "user.location",
+                "user.followers", "user.fans", "user.score",
+                "user.isRememberMe", "user.gender", "user.favoritecount");*/
+    }
+
+    /**
+     * 用户注销
+     */
+    public void logout() {
+        cleanLoginInfo();
+        //TODO
+       /* ApiHttpClient.cleanCookie();
+        this.cleanCookie();
+        this.login = false;
+        this.loginUid = 0;
+
+        Intent intent = new Intent(Constants.INTENT_ACTION_LOGOUT);
+        sendBroadcast(intent);
+        */
+    }
+
 
     /**
      * 获得当前app运行的AppContext

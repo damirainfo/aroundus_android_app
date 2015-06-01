@@ -9,6 +9,14 @@ import com.hilinju.android.ui.fragment.TopicFragment;
 public enum MainTab {
 
     TOPIC(0, R.string.main_tab_name_topic, R.drawable.tab_icon_topic,
+            TopicFragment.class),
+    CHAT(1, R.string.main_tab_name_chat, R.drawable.tab_icon_topic,
+            TopicFragment.class),
+    QUICK(2, R.string.main_tab_name_quick, R.drawable.tab_icon_topic,
+            null),
+    NEARBY(3, R.string.main_tab_name_nearby, R.drawable.tab_icon_topic,
+            TopicFragment.class),
+    NETWORK(4, R.string.main_tab_name_network, R.drawable.tab_icon_topic,
             TopicFragment.class);
 
     private int idx;

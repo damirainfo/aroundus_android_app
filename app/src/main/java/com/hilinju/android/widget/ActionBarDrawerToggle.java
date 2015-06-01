@@ -1,7 +1,5 @@
 package com.hilinju.android.widget;
 
-import java.lang.reflect.Method;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -15,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.hilinju.android.R;
+import java.lang.reflect.Method;
 
 /**
  * Created by qiuxj on 2015/5/26.
  */
-public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawerToggle {
+public class ActionBarDrawerToggle extends android.support.v7.app.ActionBarDrawerToggle {
 
     private static final String TAG = ActionBarDrawerToggle.class.getName();
 
@@ -32,12 +30,14 @@ public class ActionBarDrawerToggle extends android.support.v4.app.ActionBarDrawe
     protected DrawerArrowDrawable mDrawerImage;
     protected boolean animateEnabled;
 
-    public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout, int drawerImageRes, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
-        super(activity, drawerLayout, drawerImageRes, openDrawerContentDescRes, closeDrawerContentDescRes);
-    }
+    /*public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout, int drawerImageRes, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
+        //super(activity, drawerLayout, drawerImageRes, openDrawerContentDescRes, closeDrawerContentDescRes);
+        super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
+    }*/
 
     public ActionBarDrawerToggle(Activity activity, DrawerLayout drawerLayout, DrawerArrowDrawable drawerImage, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
-        super(activity, drawerLayout, R.drawable.ic_drawer, openDrawerContentDescRes, closeDrawerContentDescRes);
+        //super(activity, drawerLayout, R.drawable.ic_drawer, openDrawerContentDescRes, closeDrawerContentDescRes);
+        super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
         mActivity = activity;
         mDrawerLayout = drawerLayout;
         mOpenDrawerContentDescRes = openDrawerContentDescRes;
