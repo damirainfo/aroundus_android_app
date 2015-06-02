@@ -15,6 +15,10 @@
     <string name="error_view_network_error_click_to_refresh">没有可用的网络</string>
     <string name="tip_network_error">没有可用的网络</string>
 
+    <string name="error_network_timeout">网络超时</string>
+    <string name="error_no_network">网络链接已断开</string>
+    <string name="error_access_exception">访问异常</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 

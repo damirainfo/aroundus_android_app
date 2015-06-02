@@ -1,4 +1,4 @@
-package com.hilinju.android.helper;
+package com.hilinju.android.util.volley;
 
 import android.text.TextUtils;
 
@@ -25,7 +25,7 @@ public class VolleyHelper {
     public static RequestQueue getRequestQueue(){
         if (requestQueue==null){
             synchronized (AppContext.class){
-                requestQueue = Volley.newRequestQueue(AppContext.getInstance());
+                requestQueue = Volley.newRequestQueue(AppContext.getInstance(), new OkHttpStack());
             }
         }
         return requestQueue;

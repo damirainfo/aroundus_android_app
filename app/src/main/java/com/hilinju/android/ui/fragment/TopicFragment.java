@@ -1,7 +1,7 @@
 package com.hilinju.android.ui.fragment;
 
-import java.io.InputStream;
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,28 +9,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.facebook.common.internal.Maps;
 import com.hilinju.android.AppContext;
 import com.hilinju.android.R;
 import com.hilinju.android.adapter.TopicAdapter;
 import com.hilinju.android.base.BaseListFragment;
 import com.hilinju.android.base.Constants;
 import com.hilinju.android.base.EmptyLayout;
+import com.hilinju.android.entity.Result;
 import com.hilinju.android.entity.Topic;
-import com.hilinju.android.helper.VolleyHelper;
-import com.hilinju.android.ui.activity.MainActivity;
-import com.hilinju.android.ui.dialog.CommonDialog;
-import com.hilinju.android.ui.dialog.DialogHelper;
-import com.hilinju.android.util.TDevice;
+import com.hilinju.android.util.volley.GsonRequest;
+import com.hilinju.android.util.volley.VolleyErrorHelper;
+import com.hilinju.android.util.volley.VolleyHelper;
 
 /**
  * Created by qiuxj on 2015/5/27.
@@ -115,38 +114,60 @@ public class TopicFragment extends BaseListFragment<Topic> {
 
     @Override
     protected void requestData(boolean refresh) {
-        if (AppContext.getInstance().isLogin()) {
+        //if (AppContext.getInstance().isLogin()) {
             mIsWatingLogin = false;
             super.requestData(refresh);
-        } else {
-            mIsWatingLogin = true;
-            mErrorLayout.setErrorType(EmptyLayout.NETWORK_ERROR);
-            mErrorLayout.setErrorMessage(getString(R.string.unlogin_tip));
-        }
+//        } else {
+//            mIsWatingLogin = true;
+//            mErrorLayout.setErrorType(EmptyLayout.NETWORK_ERROR);
+//            mErrorLayout.setErrorMessage(getString(R.string.unlogin_tip));
+//        }
     }
 
     @Override
     protected void sendRequestData() {
         //TODO HTTPS example https://github.com/ogrebgr/android_volley_examples/tree/master/src/com/github/volley_examples/toolbox
-        String url = "";
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, "https://api.hilinju.com/api/v1/auth/login", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (TextUtils.isEmpty(response)) {
-                    //listView.onGetDataFailure(page);
+                    //TODO
                     return;
                 }
-               // DBHelper.newInstance().save(tab, response);
-                //handleData(page, response, System.currentTimeMillis() / 1000);
+                Log.e("RESP>>>>", response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //VolleyErrorHelper.getMessage(error, sActivity);
-                //listView.onGetDataFailure(page);
+                String errorMessage = VolleyErrorHelper.getMessage(error, getApplication());
+                Log.e("ERROR RESP>>>>", errorMessage);
             }
-        });
-        //VolleyHelper.addToRequestQueue(request, tab);
+        }){
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("user[login_name]", "user_0@aroundus.com");
+                params.put("user[password]", "00000000");
+                return params;
+            }
+        };
+        VolleyHelper.addToRequestQueue(request);
+
+//        Map<String, String> params = Maps.newHashMap();
+//        params.put("user[login_name]", "user_0@aroundus.com");
+//        params.put("user[password]", "00000000");
+//        GsonRequest<Result> r = new GsonRequest<Result>(Request.Method.POST, "https://api.hilinju.com/api/v1/auth/login", Result.class, null, params, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(T response) {
+//                Log.e("GSON RESP>>>>", "");
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                String errorMessage = VolleyErrorHelper.getMessage(error, getApplication());
+//                Log.e("GSON ERROR RESP>>>>", errorMessage);
+//            }
+//        });
+//        VolleyHelper.addToRequestQueue(r);
     }
 
     /**
